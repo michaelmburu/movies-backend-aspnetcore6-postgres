@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Movies_API.Models.Genres;
+using Movies_API.MovieContext;
 
 namespace Movies_API.Controllers
 {
@@ -14,10 +15,11 @@ namespace Movies_API.Controllers
     {
 
         private readonly ILogger<GenresController> _logger;
-
-        public GenresController(ILogger<GenresController> logger)
+        private MovieDBContext movieDBContext; 
+        public GenresController(ILogger<GenresController> logger, MovieDBContext _movieDbContext)
         {
             _logger = logger;
+            movieDBContext = _movieDbContext;
         }
 
         [HttpGet]
@@ -25,7 +27,7 @@ namespace Movies_API.Controllers
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<List<Genre>>> Get()
         {
-            return new List<Genre> { new Genre { Id = 1, Name = "SciFi" } };
+            return await movieDBContext.Ge
         }
 
         [HttpGet("{id:int}")]
