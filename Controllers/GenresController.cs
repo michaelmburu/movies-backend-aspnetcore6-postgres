@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.EntityFrameworkCore;
 using Movies_API.Models.Genres;
 using Movies_API.MovieContext;
 
@@ -10,7 +11,7 @@ namespace Movies_API.Controllers
 {
    
     [Route("api/genres")]
-    [ApiController]
+    [ApiController] // No need to use ModelState.isValid, APIController does it automatically
     public class GenresController : ControllerBase
     {
 
@@ -27,7 +28,8 @@ namespace Movies_API.Controllers
         //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         public async Task<ActionResult<List<Genre>>> Get()
         {
-            return await movieDBContext.Ge
+            _logger.LogInformation("Getting all information");
+            return await movieDBContext.Genres.ToListAsync();
         }
 
         [HttpGet("{id:int}")]
@@ -38,9 +40,12 @@ namespace Movies_API.Controllers
         }
 
         [HttpPost]
-        public ActionResult<Genre> Post([FromBody] Genre genre)
+        public async Task<ActionResult> Post([FromBody] Genre genre)
         {
-            return NoContent();
+            _logger.LogInformation($"Creating Genre {genre}");
+            movieDBContext.Add(genre);
+            await movieDBContext.SaveChangesAsync();
+            return CreatedAtAction("Post", genre);
         }
 
         [HttpPut]
