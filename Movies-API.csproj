@@ -7,6 +7,9 @@
     <RootNamespace>Movies_API</RootNamespace>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.8" />
@@ -16,6 +19,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,11 +32,24 @@
     <None Remove="DbContext\" />
     <None Remove="Microsoft.EntityFrameworkCore" />
     <None Remove="Microsoft.EntityFrameworkCore.Tools" />
+    <None Remove="APIBehaviour\" />
+    <None Remove="DTO\" />
+    <None Remove="AutoMapper.Extensions.Microsoft.DependencyInjection" />
+    <None Remove="AutoMapper\" />
+    <None Remove="DTO\Genre\" />
+    <None Remove="DTO\Pagination\" />
+    <None Remove="Helpers\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
     <Folder Include="Models\Genres\" />
     <Folder Include="Validations\" />
     <Folder Include="Filters\" />
+    <Folder Include="APIBehaviour\" />
+    <Folder Include="DTO\" />
+    <Folder Include="AutoMapper\" />
+    <Folder Include="DTO\Genre\" />
+    <Folder Include="DTO\Pagination\" />
+    <Folder Include="Helpers\" />
   </ItemGroup>
 </Project>
