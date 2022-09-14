@@ -1,8 +1,13 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Movies_API.APIBehaviour;
+using Movies_API.AutoMapper;
 using Movies_API.Filters;
+using Movies_API.Helpers;
 using Movies_API.MovieContext;
+using NetTopologySuite;
+using NetTopologySuite.Geometries;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,7 +30,7 @@ builder.Services.AddCors(options =>
                           policy
                           .WithOrigins("http://localhost:3000")
                           .AllowAnyHeader()
-                          //.AllowAnyOrigin()
+                          .WithExposedHeaders("totalamountofrecords") //Add custom headers
                           .AllowAnyMethod();
                       });
 });
@@ -35,13 +40,25 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 //Add Postgres
-builder.Services.AddDbContext<MovieDBContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("movies")));
+builder.Services.AddDbContext<MovieDBContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("movies"),
+                                                options => options.UseNetTopologySuite()));
 
 
 //Add AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));
 
-//Add Repository
+//Add NetTopology Suite for planet earth
+builder.Services.AddSingleton<GeometryFactory>(NtsGeometryServices.Instance.CreateGeometryFactory(srid: 4326));
+
+builder.Services.AddSingleton(provider => new MapperConfiguration(config =>
+{
+    var geometryFactory = provider.GetRequiredService<GeometryFactory>();
+    config.AddProfile(new AutoMapperProfiles(geometryFactory));
+}));
+//Add Storage Services
+builder.Services.AddScoped<IFileStorageService, AzureStorageService>();
+
+
 
 
 //Add Filters

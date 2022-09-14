@@ -12,7 +12,7 @@
     "Movies_API": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "http://localhost:36532",
+      "applicationUrl": "http://localhost:57566",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

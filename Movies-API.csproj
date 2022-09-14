@@ -20,6 +20,8 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
+    <PackageReference Include="Azure.Storage.Blobs" Version="12.13.1" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NetTopologySuite" Version="6.0.6" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,6 +41,12 @@
     <None Remove="DTO\Genre\" />
     <None Remove="DTO\Pagination\" />
     <None Remove="Helpers\" />
+    <None Remove="Models\Actor\" />
+    <None Remove="DTO\Actor\" />
+    <None Remove="Azure.Storage.Blobs" />
+    <None Remove="Models\MovieTheater\" />
+    <None Remove="Npgsql.EntityFrameworkCore.PostgreSQL.NetTopologySuite" />
+    <None Remove="DTO\MovieTheater\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
@@ -51,5 +59,9 @@
     <Folder Include="DTO\Genre\" />
     <Folder Include="DTO\Pagination\" />
     <Folder Include="Helpers\" />
+    <Folder Include="Models\Actor\" />
+    <Folder Include="DTO\Actor\" />
+    <Folder Include="Models\MovieTheater\" />
+    <Folder Include="DTO\MovieTheater\" />
   </ItemGroup>
 </Project>
