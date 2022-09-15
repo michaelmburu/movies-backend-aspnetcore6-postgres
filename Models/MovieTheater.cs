@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using NetTopologySuite.Geometries;
 
-namespace Movies_API.Models.MovieTheater
+namespace Movies_API.Models
 {
     public class MovieTheater
     {

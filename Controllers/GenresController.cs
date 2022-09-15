@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Movies_API.DTO.Genre;
 using Movies_API.DTO.PaginationDTO;
 using Movies_API.Helpers;
-using Movies_API.Models.Genres;
+using Movies_API.Models;
 using Movies_API.MovieContext;
 
 namespace Movies_API.Controllers

@@ -19,14 +19,14 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.13.1" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL.NetTopologySuite" Version="6.0.6" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
   </ItemGroup>
 
   <ItemGroup>
     <None Remove="Models\" />
-    <None Remove="Models\Genres\" />
     <None Remove="Validations\" />
     <None Remove="Microsoft.AspNetCore.Authentication.JwtBearer" />
     <None Remove="Filters\" />
@@ -44,13 +44,15 @@
     <None Remove="Models\Actor\" />
     <None Remove="DTO\Actor\" />
     <None Remove="Azure.Storage.Blobs" />
-    <None Remove="Models\MovieTheater\" />
     <None Remove="Npgsql.EntityFrameworkCore.PostgreSQL.NetTopologySuite" />
     <None Remove="DTO\MovieTheater\" />
+    <None Remove="Models\Movies\" />
+    <None Remove="Models\MovieTheaterMovies\" />
+    <None Remove="Context\" />
+    <None Remove="Newtonsoft.Json" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
-    <Folder Include="Models\Genres\" />
     <Folder Include="Validations\" />
     <Folder Include="Filters\" />
     <Folder Include="APIBehaviour\" />
@@ -59,9 +61,8 @@
     <Folder Include="DTO\Genre\" />
     <Folder Include="DTO\Pagination\" />
     <Folder Include="Helpers\" />
-    <Folder Include="Models\Actor\" />
     <Folder Include="DTO\Actor\" />
-    <Folder Include="Models\MovieTheater\" />
     <Folder Include="DTO\MovieTheater\" />
+    <Folder Include="Context\" />
   </ItemGroup>
 </Project>

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Movies_API.DTO.Actor;
 using Movies_API.DTO.PaginationDTO;
 using Movies_API.Helpers;
-using Movies_API.Models.Actor;
+using Movies_API.Models;
 using Movies_API.MovieContext;
 
 namespace Movies_API.Controllers

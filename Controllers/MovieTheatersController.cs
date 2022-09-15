@@ -6,8 +6,9 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Movies_API.DTO.MovieTheater;
-using Movies_API.Models.Genres;
-using Movies_API.Models.MovieTheater;
+using Movies_API.DTO.PaginationDTO;
+using Movies_API.Helpers;
+using Movies_API.Models;
 using Movies_API.MovieContext;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -27,9 +28,11 @@ namespace Movies_API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<MovieTheaterDTO>>> Get()
+        public async Task<ActionResult<List<MovieTheaterDTO>>> Get([FromQuery] PaginationDTO paginationDTO)
         {
-            var entities = await _movieDBContext.MovieTheaters.ToListAsync();
+            var queryable = _movieDBContext.MovieTheaters.AsQueryable();
+            await HttpContext.InsertParametersPaginationFromHeader(queryable);
+            var entities = await queryable.OrderBy(x => x.Name).ToListAsync();
             return  _mapper.Map<List<MovieTheaterDTO>>(entities);
         }
 
