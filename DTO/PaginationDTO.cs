@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Movies_API.DTO.PaginationDTO
+namespace Movies_API.DTO
 {
     public class PaginationDTO
     {

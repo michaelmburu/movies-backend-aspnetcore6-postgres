@@ -5,8 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Movies_API.DTO.MovieTheater;
-using Movies_API.DTO.PaginationDTO;
+using Movies_API.DTO;
 using Movies_API.Helpers;
 using Movies_API.Models;
 using Movies_API.MovieContext;
@@ -14,9 +13,9 @@ using Movies_API.MovieContext;
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace Movies_API.Controllers
-{
-    [ApiController]
+{  
     [Route("api/movietheaters")]
+    [ApiController]
     public class MovieTheatersController : Controller
     {
         private readonly MovieDBContext _movieDBContext;
@@ -48,6 +47,7 @@ namespace Movies_API.Controllers
             return _mapper.Map<MovieTheaterDTO>(movieTheater);
 
         }
+
 
         [HttpPost]
         public async Task<ActionResult> Post(MovieTheaterCreationDTO movieCreationDTO)

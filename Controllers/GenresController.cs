@@ -6,8 +6,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
-using Movies_API.DTO.Genre;
-using Movies_API.DTO.PaginationDTO;
+using Movies_API.DTO;
 using Movies_API.Helpers;
 using Movies_API.Models;
 using Movies_API.MovieContext;
@@ -15,7 +14,6 @@ using Movies_API.MovieContext;
 namespace Movies_API.Controllers
 {
     
-    [EnableCors()]    
     [Route("api/genres")]
     [ApiController] // No need to use ModelState.isValid, APIController does it automatically
     public class GenresController : ControllerBase

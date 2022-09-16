@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Movies_API.DTO.Genre
+namespace Movies_API.DTO
 {
     public class GenreDTO
     {

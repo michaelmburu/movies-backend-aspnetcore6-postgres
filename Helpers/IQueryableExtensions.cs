@@ -1,5 +1,5 @@
 ﻿using System;
-using Movies_API.DTO.PaginationDTO;
+using Movies_API.DTO;
 
 namespace Movies_API.Helpers
 {

@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Movies_API.DTO.Actor
+namespace Movies_API.DTO
 {
     public class ActorDTO
     {

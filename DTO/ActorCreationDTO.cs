@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Movies_API.DTO.Actor
+namespace Movies_API.DTO
 {
     public class ActorCreationDTO
     {
@@ -10,7 +10,7 @@ namespace Movies_API.DTO.Actor
         public string Name { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string Biography { get; set; }
-        public IFormFile Picture { get; set; }
+        public IFormFile? Picture { get; set; }
     }
 }
 

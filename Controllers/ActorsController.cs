@@ -2,8 +2,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Movies_API.DTO.Actor;
-using Movies_API.DTO.PaginationDTO;
+using Movies_API.DTO;
 using Movies_API.Helpers;
 using Movies_API.Models;
 using Movies_API.MovieContext;
@@ -48,14 +47,29 @@ namespace Movies_API.Controllers
             return _mapper.Map<ActorDTO>(actor);
         }
 
+        [HttpGet("searchByName/{query}")]
+        public async Task<ActionResult<List<ActorsMovieDTO>>> SearchByName(string query)
+        {
+            if(string.IsNullOrWhiteSpace(query)) { return new List<ActorsMovieDTO>(); }
+
+            return await _movieDBContext.Actors
+                            .Where(x => x.Name.Contains(query))
+                            .OrderBy(x => x.Name)
+                            .Select(x => new ActorsMovieDTO { Id = x.Id, Name = x.Name, Picture = x.Picture })
+                            .Take(5)
+                            .ToListAsync();
+        }
+
         [HttpPost]
         public async Task<ActionResult> Post([FromForm] ActorCreationDTO actorCreationDTO)
         {
+            actorCreationDTO.DateOfBirth = actorCreationDTO.DateOfBirth.ToUniversalTime();
             var actor = _mapper.Map<Actor>(actorCreationDTO);
-            if(actorCreationDTO.Picture != null)
-            {
-                actor.Picture = await _fileStorageService.SaveFile(containerName, actorCreationDTO.Picture);
-            }
+            actor.Picture = "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e8/Chadwick_Boseman_by_Gage_Skidmore_July_2017_%28cropped%29.jpg/440px-Chadwick_Boseman_by_Gage_Skidmore_July_2017_%28cropped%29.jpg";
+            //if(actorCreationDTO.Picture != null)
+            //{
+            //    actor.Picture = await _fileStorageService.SaveFile(containerName, actorCreationDTO.Picture);
+            //}
 
             _movieDBContext.Add(actor);
             await _movieDBContext.SaveChangesAsync();

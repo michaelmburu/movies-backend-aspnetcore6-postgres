@@ -1,9 +1,6 @@
 ﻿using System;
 using AutoMapper;
 using Movies_API.DTO;
-using Movies_API.DTO.Actor;
-using Movies_API.DTO.Genre;
-using Movies_API.DTO.MovieTheater;
 using Movies_API.Models;
 using NetTopologySuite.Geometries;
 
@@ -35,10 +32,10 @@ namespace Movies_API.AutoMapper
                 ))));
 
             CreateMap<MovieCreationDTO, Movie>()
-              .ForMember(x => x.Poster, options => options.Ignore())
-              .ForMember(x => x.MovieGenres, options => options.MapFrom(MapMoviesGenres))
-              .ForMember(x => x.MovieTheatersMovies, options => options.MapFrom(MapMovieTheatersMovies))
-              .ForMember(x => x.MoviesActors, options => options.MapFrom(MapMoviesActors));
+                .ForMember(x => x.Poster, options => options.Ignore())
+                .ForMember(x => x.MoviesGenres, options => options.MapFrom(MapMoviesGenres))
+                .ForMember(x => x.MovieTheatersMovies, options => options.MapFrom(MapMovieTheatersMovies))
+                .ForMember(x => x.MoviesActors, options => options.MapFrom(MapMoviesActors));
         }
 
         private object MapMoviesActors(MovieTheaterCreationDTO arg)

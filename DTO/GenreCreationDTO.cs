@@ -2,7 +2,7 @@
 using Movies_API.Validations;
 using System.ComponentModel.DataAnnotations;
 
-namespace Movies_API.DTO.Genre
+namespace Movies_API.DTO
 {
     public class GenreCreationDTO
     {
