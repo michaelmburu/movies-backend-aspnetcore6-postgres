@@ -15,7 +15,6 @@ using Movies_API.MovieContext;
 namespace Movies_API.Controllers
 {
     [Route("api/movies")]
-    [ApiController]
     public class MoviesController : ControllerBase
     {
         private readonly MovieDBContext _movieDBContext;
@@ -30,6 +29,50 @@ namespace Movies_API.Controllers
             _fileStorageService = fileStorageService;
         }
 
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<MovieDTO>> Get(int id)
+        {
+            var movie = await _movieDBContext.Movies
+                                               .Include(x => x.MoviesGenres).ThenInclude(x => x.Genre)
+                                               .Include(x => x.MovieTheatersMovies).ThenInclude(x => x.MovieTheater)
+                                               .Include(x => x.MoviesActors).ThenInclude(x => x.Actor)
+                                               .FirstOrDefaultAsync(x => x.Id == id);
+            if (movie == null)
+            {
+                return NotFound();
+            }
+
+            var movieDTO = _mapper.Map<MovieDTO>(movie);
+            movieDTO.Actors = movieDTO.Actors.OrderBy(x => x.Order).ToList();
+
+            return movieDTO;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<LandingPageDTO>> Get()
+        {
+            var top = 6;
+            var today = DateTime.Today.ToUniversalTime();
+
+            var upComingReleases = await _movieDBContext.Movies
+                .Where(x => x.ReleaseDate > today)
+                .OrderBy(x => x.ReleaseDate)
+                .Take(top)
+                .ToListAsync();
+
+            var inTheaters = await _movieDBContext.Movies
+                .Where(x => x.InTheaters)
+                .OrderBy(x => x.ReleaseDate)
+                .Take(top)
+                .ToListAsync();
+
+            var landingPageDTO = new LandingPageDTO();
+            landingPageDTO.UpComingReleases = _mapper.Map<List<MovieDTO>>(upComingReleases);
+            landingPageDTO.InTheaters = _mapper.Map<List<MovieDTO>>(inTheaters);
+
+            return landingPageDTO;
+
+        }
 
         [HttpGet("PostGet")]
         public async Task<ActionResult<MoviePostGetDTO>> PostGet()
@@ -43,20 +86,80 @@ namespace Movies_API.Controllers
             return new MoviePostGetDTO() { Genres = genresDTO, MovieTheaters = movieTheaterDTO };
         }
 
-        [HttpPost]
-        public async Task<ActionResult> Post([FromForm] MovieCreationDTO movieCreationDTO)
+        [HttpGet("putget/{id:int}")]
+        public async Task<ActionResult<MoviePutGetDTO>> PutGet(int id)
         {
-            var movie = _mapper.Map<Movie>(movieCreationDTO);
-            if(movieCreationDTO.Poster == null)
+
+            var movieActionResult = await Get(id);
+            if(movieActionResult.Result is NotFoundResult) { return NotFound(); }
+
+            var movie = movieActionResult?.Value;
+
+            if(movie == null)
             {
-                movie.Poster = await _fileStorageService.SaveFile(container, movieCreationDTO.Poster);
+                return NotFound();
             }
+
+            var genresSelectedIds = movie.Genres.Select(x => x.Id).ToList();
+            var nonSelectedGenres = await _movieDBContext.Genres.Where(x => !genresSelectedIds.Contains(x.Id))
+                                                            .ToListAsync();
+
+            var movieTheatersIds = movie.MovieTheaters.Select(x => x.Id).ToList();
+            var nonSelectedMovieTheaters = await _movieDBContext.MovieTheaters.Where(x => !movieTheatersIds.Contains(x.Id))
+                                                            .ToListAsync();
+
+            var noneSelectedGenresDTO = _mapper.Map<List<GenreDTO>>(nonSelectedGenres);
+            var noneSelectedMovieTheatersDTO = _mapper.Map<List<MovieTheaterDTO>>(nonSelectedMovieTheaters);
+
+            var response = new MoviePutGetDTO {
+                Movie = movie,
+                SelectedGenres = movie.Genres,
+                NoneSelectedGenres = noneSelectedGenresDTO,
+                SelectedMovieTheaters = movie.MovieTheaters,
+                NoneSelectedMovieTheaters = noneSelectedMovieTheatersDTO,
+                Actors = movie.Actors
+            };
+
+            return response;
+        }
+
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult> Put(int id, [FromForm] MovieCreationDTO movieCreationDTO)
+        {
+            var movie = await _movieDBContext.Movies.Include(x => x.MoviesActors)
+                                                .Include(x => x.MoviesGenres)
+                                                .Include(x => x.MovieTheatersMovies)
+                                                .FirstOrDefaultAsync(x => x.Id == id);
+            if(movie == null) { return NotFound(); }
+            movie = _mapper.Map(movieCreationDTO, movie);
+
+            if(movieCreationDTO.Poster != null)
+            {
+                //Add new image here
+            }
+
+            AnnotateActorsOrder(movie);
+            await _movieDBContext.SaveChangesAsync();
+            return NoContent();
+
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<int>> Post([FromForm] MovieCreationDTO movieCreationDTO)
+        {
+            movieCreationDTO.ReleaseDate = movieCreationDTO.ReleaseDate.ToUniversalTime();
+            var movie = _mapper.Map<Movie>(movieCreationDTO);
+            movie.Poster = "https://en.wikipedia.org/wiki/File:Black_Panther_Wakanda_Forever_poster.jpg";
+            //if(movieCreationDTO.Poster != null)
+            //{
+            //    movie.Poster = await _fileStorageService.SaveFile(container, movieCreationDTO.Poster);
+            //}
 
             AnnotateActorsOrder(movie);
             _movieDBContext.Add(movie);
             await _movieDBContext.SaveChangesAsync();
 
-            return Created("actors", movieCreationDTO);
+            return movie.Id;
         }
 
         //Store in database the correct order

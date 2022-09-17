@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Movies_API.MovieContext;
+using NetTopologySuite.Geometries;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -102,7 +103,7 @@ namespace Movies_API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Movie");
+                    b.ToTable("Movies");
                 });
 
             modelBuilder.Entity("Movies_API.Models.MoviesActors", b =>
@@ -151,6 +152,10 @@ namespace Movies_API.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<Point>("Location")
+                        .IsRequired()
+                        .HasColumnType("geometry");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(25)
@@ -185,7 +190,7 @@ namespace Movies_API.Migrations
                         .IsRequired();
 
                     b.HasOne("Movies_API.Models.Movie", "Movie")
-                        .WithMany()
+                        .WithMany("MoviesActors")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -204,7 +209,7 @@ namespace Movies_API.Migrations
                         .IsRequired();
 
                     b.HasOne("Movies_API.Models.Movie", "Movie")
-                        .WithMany("MovieGenres")
+                        .WithMany("MoviesGenres")
                         .HasForeignKey("MovieId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -235,9 +240,11 @@ namespace Movies_API.Migrations
 
             modelBuilder.Entity("Movies_API.Models.Movie", b =>
                 {
-                    b.Navigation("MovieGenres");
-
                     b.Navigation("MovieTheatersMovies");
+
+                    b.Navigation("MoviesActors");
+
+                    b.Navigation("MoviesGenres");
                 });
 #pragma warning restore 612, 618
         }

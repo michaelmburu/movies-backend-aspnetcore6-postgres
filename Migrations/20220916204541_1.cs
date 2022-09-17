@@ -1,12 +1,13 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using NetTopologySuite.Geometries;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
 namespace Movies_API.Migrations
 {
-    public partial class initial : Migration
+    public partial class _1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -40,7 +41,7 @@ namespace Movies_API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Movie",
+                name: "Movies",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -54,7 +55,7 @@ namespace Movies_API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Movie", x => x.Id);
+                    table.PrimaryKey("PK_Movies", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -63,7 +64,8 @@ namespace Movies_API.Migrations
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false)
+                    Name = table.Column<string>(type: "character varying(25)", maxLength: 25, nullable: false),
+                    Location = table.Column<Point>(type: "geometry", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -89,9 +91,9 @@ namespace Movies_API.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_MoviesActors_Movie_MovieId",
+                        name: "FK_MoviesActors_Movies_MovieId",
                         column: x => x.MovieId,
-                        principalTable: "Movie",
+                        principalTable: "Movies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -113,9 +115,9 @@ namespace Movies_API.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_MoviesGenres_Movie_MovieId",
+                        name: "FK_MoviesGenres_Movies_MovieId",
                         column: x => x.MovieId,
-                        principalTable: "Movie",
+                        principalTable: "Movies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -131,9 +133,9 @@ namespace Movies_API.Migrations
                 {
                     table.PrimaryKey("PK_MovieTheatersMovies", x => new { x.MovieTheaterId, x.MovieId });
                     table.ForeignKey(
-                        name: "FK_MovieTheatersMovies_Movie_MovieId",
+                        name: "FK_MovieTheatersMovies_Movies_MovieId",
                         column: x => x.MovieId,
-                        principalTable: "Movie",
+                        principalTable: "Movies",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -178,7 +180,7 @@ namespace Movies_API.Migrations
                 name: "Genres");
 
             migrationBuilder.DropTable(
-                name: "Movie");
+                name: "Movies");
 
             migrationBuilder.DropTable(
                 name: "MovieTheater");

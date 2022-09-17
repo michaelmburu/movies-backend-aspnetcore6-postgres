@@ -30,6 +30,8 @@ namespace Movies_API.MovieContext
 
         public DbSet<Actor> Actors { get; set; }
 
+        public DbSet<Movie> Movies { get; set; }
+
         public DbSet<MovieTheater> MovieTheaters { get; set; }
 
         public DbSet<MoviesActors> MoviesActors { get; set; }
