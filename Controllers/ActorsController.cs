@@ -65,7 +65,7 @@ namespace Movies_API.Controllers
         {
             actorCreationDTO.DateOfBirth = actorCreationDTO.DateOfBirth.ToUniversalTime();
             var actor = _mapper.Map<Actor>(actorCreationDTO);
-            actor.Picture = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Letitia_Wright_by_Gage_Skidmore.jpg/440px-Letitia_Wright_by_Gage_Skidmore.jpg";
+            actor.Picture = "https://en.wikipedia.org/wiki/File:Chris_Hemsworth_by_Gage_Skidmore_2_(cropped).jpg";
             //if(actorCreationDTO.Picture != null)
             //{
             //    actor.Picture = await _fileStorageService.SaveFile(containerName, actorCreationDTO.Picture);

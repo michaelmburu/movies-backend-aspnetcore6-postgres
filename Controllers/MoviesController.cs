@@ -74,6 +74,39 @@ namespace Movies_API.Controllers
 
         }
 
+        [HttpGet("filter")]
+        public async Task<ActionResult<List<MovieDTO>>> Filter([FromQuery] FilterMoviesDTO filterMoviesDTO)
+        {
+            var moviesQueryable = _movieDBContext.Movies.AsQueryable();
+
+            if(!string.IsNullOrEmpty(filterMoviesDTO.Title))
+            {
+                moviesQueryable = moviesQueryable.Where(x => x.Title.Contains(filterMoviesDTO.Title));
+            }
+
+            if (filterMoviesDTO.InTheaters)
+            {
+                moviesQueryable = moviesQueryable.Where(x => x.InTheaters);
+            }
+
+            if(filterMoviesDTO.UpComingReleases)
+            {
+                var today = DateTime.Today.ToUniversalTime();
+                moviesQueryable = moviesQueryable.Where(x => x.ReleaseDate > today);
+            }
+
+            if(filterMoviesDTO.GenreId != 0)
+            {
+                moviesQueryable = moviesQueryable.Where(x => x.MoviesGenres.Select(y => y.GenreId).Contains(filterMoviesDTO.GenreId));
+            }
+
+            await HttpContext.InsertParametersPaginationFromHeader(moviesQueryable);
+
+            var movies = await moviesQueryable.OrderBy(x => x.Title).Paginate(filterMoviesDTO.PaginationDTO).ToListAsync();
+
+            return _mapper.Map<List<MovieDTO>>(movies);
+        }
+
         [HttpGet("PostGet")]
         public async Task<ActionResult<MoviePostGetDTO>> PostGet()
         {
@@ -172,6 +205,19 @@ namespace Movies_API.Controllers
                     movie.MoviesActors[i].Order = i;
                 }
             }
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var movie = await _movieDBContext.Movies.FirstOrDefaultAsync(x => x.Id == id);
+
+            if(movie == null) { return NotFound(); }
+
+            _movieDBContext.Remove(movie);
+            await _movieDBContext.SaveChangesAsync();
+            // await _fileStorageService.DeleteFile(movie.poster, container);
+            return NoContent();
         }
     }
 }
