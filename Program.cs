@@ -1,6 +1,9 @@
-﻿using AutoMapper;
+﻿using System.Text;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Movies_API.APIBehaviour;
 using Movies_API.AutoMapper;
 using Movies_API.Filters;
@@ -57,17 +60,29 @@ builder.Services.AddSingleton(provider => new MapperConfiguration(config =>
 builder.Services.AddScoped<IFileStorageService, AzureStorageService>();
 
 
-
-
-//Add Filters
-
-
 //Add Caching
 builder.Services.AddResponseCaching();
 
 
+//Add Identity
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+        .AddEntityFrameworkStores<MovieDBContext>()
+        .AddDefaultTokenProviders();
+
 //Add Authentication
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opptions =>
+{
+    opptions.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["keyjwt"])),
+        ClockSkew = TimeSpan.Zero
+    };
+});
+
 
 var app = builder.Build();
 

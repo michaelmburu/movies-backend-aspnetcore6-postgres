@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Movies_API.Models;
 
 namespace Movies_API.MovieContext
 {
-    public class MovieDBContext : DbContext
+    public class MovieDBContext : IdentityDbContext
     {
         public MovieDBContext(DbContextOptions<MovieDBContext> options): base(options)
         {
