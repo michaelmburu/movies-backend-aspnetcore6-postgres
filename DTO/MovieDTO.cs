@@ -10,6 +10,8 @@ namespace Movies_API.DTO
         public string Title { get; set; }
         public string Summary { get; set; }
         public string Trailer { get; set; }
+        public int UserRating { get; set; }
+        public int AverageRating { get; set; }
         public bool InTheaters { get; set; }
         public DateTime ReleaseDate { get; set; }
         public string Poster { get; set; }

@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -26,6 +27,13 @@ namespace Movies_API.Filters
                 if(badRequestObjectResult?.Value is string)
                 {
                     response.Add(badRequestObjectResult.Value.ToString());
+                }
+                else if(badRequestObjectResult?.Value is IEnumerable<IdentityError> errors)
+                {
+                    foreach(var error in errors)
+                    {
+                        response.Add(error.Description);
+                    }
                 }
                 else
                 {

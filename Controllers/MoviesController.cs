@@ -44,7 +44,8 @@ namespace Movies_API.Controllers
 
             var movieDTO = _mapper.Map<MovieDTO>(movie);
             movieDTO.Actors = movieDTO.Actors.OrderBy(x => x.Order).ToList();
-
+            //movieDTO.UserRating = _movieDBContext.Ratings.FirstOrDefault(x => x.MovieId == movieDTO.Id).Rate;
+            //movieDTO.AverageRating = movieDTO.UserRating;
             return movieDTO;
         }
 

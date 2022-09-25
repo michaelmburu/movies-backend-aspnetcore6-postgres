@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -18,7 +19,6 @@ var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 
 // Add services to the container.
-
 builder.Services.AddControllers(options =>
 {
     options.Filters.Add(typeof(ParseBadRequestFilter));
@@ -70,18 +70,21 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
         .AddDefaultTokenProviders();
 
 //Add Authentication
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opptions =>
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
-    opptions.TokenValidationParameters = new TokenValidationParameters
+    options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = false,
         ValidateAudience = false,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["keyjwt"])),
-        ClockSkew = TimeSpan.Zero
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["ConnectionStrings:keyjwt"])),
+        ClockSkew = TimeSpan.Zero,
     };
 });
+
+//Clear default claim type map- Remove the long url
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
 
 var app = builder.Build();

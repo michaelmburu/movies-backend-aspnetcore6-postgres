@@ -41,6 +41,8 @@ namespace Movies_API.MovieContext
 
         public DbSet<MovieTheater> MoviesTheatersMovies { get; set; }
 
+        public DbSet<Rating> Ratings { get; set; }
+
     }
 }
 
