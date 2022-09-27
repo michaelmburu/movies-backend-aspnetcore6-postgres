@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Movies_API.DTO;
@@ -15,6 +17,7 @@ using Movies_API.MovieContext;
 namespace Movies_API.Controllers
 {
     [Route("api/movies")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin")]
     public class MoviesController : ControllerBase
     {
         private readonly MovieDBContext _movieDBContext;
@@ -30,6 +33,7 @@ namespace Movies_API.Controllers
         }
 
         [HttpGet("{id:int}")]
+        [AllowAnonymous]
         public async Task<ActionResult<MovieDTO>> Get(int id)
         {
             var movie = await _movieDBContext.Movies
@@ -44,12 +48,13 @@ namespace Movies_API.Controllers
 
             var movieDTO = _mapper.Map<MovieDTO>(movie);
             movieDTO.Actors = movieDTO.Actors.OrderBy(x => x.Order).ToList();
-            //movieDTO.UserRating = _movieDBContext.Ratings.FirstOrDefault(x => x.MovieId == movieDTO.Id).Rate;
-            //movieDTO.AverageRating = movieDTO.UserRating;
+            movieDTO.UserRating = _movieDBContext.Ratings.FirstOrDefault(x => x.MovieId == movieDTO.Id).Rate;
+            movieDTO.AverageRating = movieDTO.UserRating;
             return movieDTO;
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<LandingPageDTO>> Get()
         {
             var top = 6;
@@ -76,6 +81,7 @@ namespace Movies_API.Controllers
         }
 
         [HttpGet("filter")]
+        [AllowAnonymous]
         public async Task<ActionResult<List<MovieDTO>>> Filter([FromQuery] FilterMoviesDTO filterMoviesDTO)
         {
             var moviesQueryable = _movieDBContext.Movies.AsQueryable();

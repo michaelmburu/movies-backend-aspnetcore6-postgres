@@ -16,6 +16,7 @@ namespace Movies_API.Controllers
     
     [Route("api/genres")]
     [ApiController] // No need to use ModelState.isValid, APIController does it automatically
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Policy = "IsAdmin")]
     public class GenresController : ControllerBase
     {
 
@@ -31,6 +32,7 @@ namespace Movies_API.Controllers
         }
 
         [HttpGet] // api/genres
+        [AllowAnonymous]
         public async Task<ActionResult<List<GenreDTO>>> Get([FromQuery] PaginationDTO paginationDTO)
         {
             // Create a query object

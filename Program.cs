@@ -17,6 +17,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
+//Clear default claim type map- Remove the long url
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
 
 // Add services to the container.
 builder.Services.AddControllers(options =>
@@ -83,8 +86,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     };
 });
 
-//Clear default claim type map- Remove the long url
-JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+// Add roles
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("IsAdmin", policy => policy.RequireClaim("role", "admin"));
+});
 
 
 var app = builder.Build();
